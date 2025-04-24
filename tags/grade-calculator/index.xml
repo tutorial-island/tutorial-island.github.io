@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Grade Calculator on Tutorial Island</title><link>https://tutorial-island.github.io/tags/grade-calculator/</link><description>Recent content in Grade Calculator on Tutorial Island</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 29 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://tutorial-island.github.io/tags/grade-calculator/index.xml" rel="self" type="application/rss+xml"/><item><title>Building a Simple Grade Calculator in Python</title><link>https://tutorial-island.github.io/posts/article-20250424012003/</link><pubDate>Thu, 29 Feb 2024 00:00:00 +0000</pubDate><guid>https://tutorial-island.github.io/posts/article-20250424012003/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Today, we&amp;rsquo;re going to build a simple grade calculator using Python. This calculator will take a student&amp;rsquo;s scores on different assignments as input, calculate the average score, and then assign a letter grade based on the average. This exercise will give you practical experience in handling user input, processing data, and making decisions using conditional statements.&lt;/p>
+&lt;h2 id="explanation">Explanation&lt;/h2>
+&lt;p>Building a grade calculator presents several challenges:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Input Handling:&lt;/strong> We need to accept input from the user, which will likely be in the form of a string. We need to convert this string into numerical data that we can work with.&lt;/li>
+&lt;li>&lt;strong>Data Validation:&lt;/strong> We should validate the input to ensure that the scores are within a valid range (e.g., 0-100).&lt;/li>
+&lt;li>&lt;strong>Calculation:&lt;/strong> We need to calculate the average score from the list of individual scores.&lt;/li>
+&lt;li>&lt;strong>Grading:&lt;/strong> We need to assign a letter grade based on the calculated average, using a predefined grading scale.&lt;/li>
+&lt;/ul>
+&lt;p>To address these challenges, we will leverage the following Python functionalities:&lt;/p></description></item></channel></rss>

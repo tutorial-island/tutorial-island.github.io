@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Text Analysis on Tutorial Island</title><link>https://tutorial-island.github.io/tags/text-analysis/</link><description>Recent content in Text Analysis on Tutorial Island</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 17 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://tutorial-island.github.io/tags/text-analysis/index.xml" rel="self" type="application/rss+xml"/><item><title>Implementing a Simple Text Analyzer in Python</title><link>https://tutorial-island.github.io/posts/article-20250417011909/</link><pubDate>Thu, 17 Apr 2025 00:00:00 +0000</pubDate><guid>https://tutorial-island.github.io/posts/article-20250417011909/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Today, we are going to implement a simple text analyzer. This analyzer will take a string of text as input and determine the frequency of each word within that text. This is a foundational exercise that touches on several core Python concepts.&lt;/p>
+&lt;h2 id="explanation">Explanation&lt;/h2>
+&lt;p>The primary challenge in this problem lies in efficiently counting the occurrences of each word. We need to:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Clean the Text:&lt;/strong> Remove punctuation and convert the text to lowercase to ensure that &amp;ldquo;The&amp;rdquo; and &amp;ldquo;the&amp;rdquo; are treated as the same word.&lt;/li>
+&lt;li>&lt;strong>Split the Text:&lt;/strong> Divide the text into individual words.&lt;/li>
+&lt;li>&lt;strong>Count the Words:&lt;/strong> Store and update the count of each word. We can use a dictionary to achieve this, where the word is the key and the count is the value.&lt;/li>
+&lt;li>&lt;strong>Handle Edge Cases:&lt;/strong> Consider how to deal with empty input strings or strings with only punctuation.&lt;/li>
+&lt;/ol>
+&lt;p>We will be utilizing the following Python functionalities:&lt;/p></description></item></channel></rss>
