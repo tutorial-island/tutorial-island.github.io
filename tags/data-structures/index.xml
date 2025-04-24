@@ -29,4 +29,14 @@
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Today, we&amp;rsquo;re going to implement a simple Stack data structure in Java. A stack is a fundamental data structure that follows the Last-In, First-Out (LIFO) principle. Think of it like a stack of plates – you always take the top plate off first. We&amp;rsquo;ll create a stack that can store integers and includes basic operations like &lt;code>push&lt;/code>, &lt;code>pop&lt;/code>, &lt;code>peek&lt;/code>, and &lt;code>isEmpty&lt;/code>.&lt;/p>
 &lt;h2 id="explanation">Explanation&lt;/h2>
-&lt;p>Implementing a stack might seem straightforward, but it presents a few challenges:&lt;/p></description></item></channel></rss>
+&lt;p>Implementing a stack might seem straightforward, but it presents a few challenges:&lt;/p></description></item><item><title>Implementing a Simple Text-Based Adventure Game in Rust</title><link>https://tutorial-island.github.io/posts/article-20250424133141/</link><pubDate>Fri, 27 Oct 2023 00:00:00 +0000</pubDate><guid>https://tutorial-island.github.io/posts/article-20250424133141/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Today, we&amp;rsquo;re diving into Rust by building a simple text-based adventure game! This game will allow the user to navigate through a story by making choices, and the story will progress based on those choices. This is a great way to understand fundamental Rust concepts in a fun and engaging way.&lt;/p>
+&lt;h2 id="explanation">Explanation&lt;/h2>
+&lt;p>Creating a text-based adventure game presents several challenges:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>User Input:&lt;/strong> We need to read input from the user, allowing them to choose actions or answer questions. Rust&amp;rsquo;s standard input/output library (&lt;code>std::io&lt;/code>) will be crucial here.&lt;/li>
+&lt;li>&lt;strong>Game State:&lt;/strong> We need to maintain the current state of the game, such as the player&amp;rsquo;s location, inventory, and health. This requires using appropriate data structures like structs and enums.&lt;/li>
+&lt;li>&lt;strong>Conditional Logic:&lt;/strong> The game&amp;rsquo;s narrative will branch based on the user&amp;rsquo;s choices. &lt;code>if&lt;/code>, &lt;code>else if&lt;/code>, and &lt;code>match&lt;/code> statements will be essential for implementing this branching logic.&lt;/li>
+&lt;li>&lt;strong>Output:&lt;/strong> We need to display information to the user, telling them about their surroundings, the consequences of their actions, and the current game state. We&amp;rsquo;ll use &lt;code>println!&lt;/code> for this.&lt;/li>
+&lt;/ol>
+&lt;p>We will use these Rust features to tackle these challenges:&lt;/p></description></item></channel></rss>

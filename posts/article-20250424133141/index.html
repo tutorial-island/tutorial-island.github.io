@@ -1,0 +1,281 @@
+<!doctype html><html class="not-ready lg:text-base" style=--bg:#faf8f1 lang=en-us dir=ltr><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>Implementing a Simple Text-Based Adventure Game in Rust-Tutorial Island</title>
+<meta name=theme-color><meta name=description content="Introduction
+Today, we&rsquo;re diving into Rust by building a simple text-based adventure game! This game will allow the user to navigate through a story by making choices, and the story will progress based on those choices. This is a great way to understand fundamental Rust concepts in a fun and engaging way.
+Explanation
+Creating a text-based adventure game presents several challenges:
+
+User Input: We need to read input from the user, allowing them to choose actions or answer questions. Rust&rsquo;s standard input/output library (std::io) will be crucial here.
+Game State: We need to maintain the current state of the game, such as the player&rsquo;s location, inventory, and health. This requires using appropriate data structures like structs and enums.
+Conditional Logic: The game&rsquo;s narrative will branch based on the user&rsquo;s choices.  if, else if, and match statements will be essential for implementing this branching logic.
+Output:  We need to display information to the user, telling them about their surroundings, the consequences of their actions, and the current game state.  We&rsquo;ll use println! for this.
+
+We will use these Rust features to tackle these challenges:"><meta name=author content="Tutorial Island"><link rel="preload stylesheet" as=style href=https://tutorial-island.github.io/main.min.css><link rel=preload as=image href=https://tutorial-island.github.io/theme.png><link rel=preload as=image href=https://tutorial-island.github.io/rss.svg><script defer src=https://tutorial-island.github.io/highlight.min.js onload=hljs.initHighlightingOnLoad()></script><link rel=icon href=https://tutorial-island.github.io/favicon.ico><link rel=apple-touch-icon href=https://tutorial-island.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.146.7"><script async src="https://www.googletagmanager.com/gtag/js?id=G-8LQ7YJEW54"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-8LQ7YJEW54")}</script><meta itemprop=name content="Implementing a Simple Text-Based Adventure Game in Rust"><meta itemprop=description content="A tutorial for junior Rust developers on creating a basic text-based adventure game, covering input/output, control flow, and data structures."><meta itemprop=datePublished content="2023-10-27T00:00:00+00:00"><meta itemprop=dateModified content="2023-10-27T00:00:00+00:00"><meta itemprop=wordCount content="1402"><meta itemprop=keywords content="Rust,Tutorial,Beginner,Game,Text-Based,Input/Output,Data Structures"><meta property="og:url" content="https://tutorial-island.github.io/posts/article-20250424133141/"><meta property="og:site_name" content="Tutorial Island"><meta property="og:title" content="Implementing a Simple Text-Based Adventure Game in Rust"><meta property="og:description" content="A tutorial for junior Rust developers on creating a basic text-based adventure game, covering input/output, control flow, and data structures."><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-10-27T00:00:00+00:00"><meta property="article:modified_time" content="2023-10-27T00:00:00+00:00"><meta property="article:tag" content="Rust"><meta property="article:tag" content="Tutorial"><meta property="article:tag" content="Beginner"><meta property="article:tag" content="Game"><meta property="article:tag" content="Text-Based"><meta property="article:tag" content="Input/Output"><meta name=twitter:card content="summary"><meta name=twitter:title content="Implementing a Simple Text-Based Adventure Game in Rust"><meta name=twitter:description content="A tutorial for junior Rust developers on creating a basic text-based adventure game, covering input/output, control flow, and data structures."><link rel=canonical href=https://tutorial-island.github.io/posts/article-20250424133141/></head><body class="bg-(--bg) text-black antialiased duration-200 ease-out [-webkit-tap-highlight-color:transparent] dark:text-white"><header class="mx-auto flex h-[4.5rem] max-w-(--w) px-8 whitespace-nowrap lg:justify-center"><div class="relative z-50 flex items-center ltr:mr-auto rtl:ml-auto"><a class="-translate-y-[1px] text-2xl font-medium" href=https://tutorial-island.github.io/>Tutorial Island</a><div class="btn-dark text-[0px] ltr:ml-4 rtl:mr-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.png)_left_center/_auto_theme('spacing.6')_no-repeat] [transition:_background-position_0.4s_steps(5)] dark:[background-position:right]" role=button aria-label=Dark></div></div><div class="btn-menu relative z-50 flex h-[4.5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden ltr:-mr-8 rtl:-ml-8" role=button aria-label=Menu></div><script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg="#faf8f1".replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full flex-col justify-center bg-(--bg) pb-16 duration-200 select-none lg:static lg:h-auto lg:flex-row lg:bg-transparent! lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 lg:mt-0 lg:items-center ltr:lg:ml-14 rtl:space-x-reverse rtl:lg:mr-14 dark:invert"><a class="h-7 w-7 text-[0px] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://tutorial-island.github.io/index.xml target=_blank rel=alternate>rss</a></nav></div></header><main class="prose prose-neutral dark:prose-invert relative mx-auto min-h-[calc(100vh-9rem)] max-w-(--w) px-8 pt-14 pb-16"><article><header class=mb-14><h1 class="my-0! pb-2.5">Implementing a Simple Text-Based Adventure Game in Rust</h1><div class="text-xs antialiased opacity-60"><time>Oct 27, 2023</time><span class=mx-1>&#183;</span>
+<span>Tutorial Island</span></div></header><section><h2 id=introduction>Introduction</h2><p>Today, we&rsquo;re diving into Rust by building a simple text-based adventure game! This game will allow the user to navigate through a story by making choices, and the story will progress based on those choices. This is a great way to understand fundamental Rust concepts in a fun and engaging way.</p><h2 id=explanation>Explanation</h2><p>Creating a text-based adventure game presents several challenges:</p><ol><li><strong>User Input:</strong> We need to read input from the user, allowing them to choose actions or answer questions. Rust&rsquo;s standard input/output library (<code>std::io</code>) will be crucial here.</li><li><strong>Game State:</strong> We need to maintain the current state of the game, such as the player&rsquo;s location, inventory, and health. This requires using appropriate data structures like structs and enums.</li><li><strong>Conditional Logic:</strong> The game&rsquo;s narrative will branch based on the user&rsquo;s choices. <code>if</code>, <code>else if</code>, and <code>match</code> statements will be essential for implementing this branching logic.</li><li><strong>Output:</strong> We need to display information to the user, telling them about their surroundings, the consequences of their actions, and the current game state. We&rsquo;ll use <code>println!</code> for this.</li></ol><p>We will use these Rust features to tackle these challenges:</p><ul><li><code>std::io::stdin</code> for reading user input.</li><li><code>String</code> to store user input and story text.</li><li><code>struct</code> to represent the game state.</li><li><code>enum</code> to represent choices/options.</li><li><code>match</code> for complex conditional branching.</li><li><code>println!</code> for outputting text to the console.</li></ul><h2 id=requirements>Requirements</h2><ul><li><p><strong>Functional Requirements:</strong></p><ul><li>The game should present the user with a starting scenario.</li><li>The game should offer the user choices based on the current scenario.</li><li>The game should update the game state based on the user&rsquo;s choices.</li><li>The game should continue until a winning or losing condition is met.</li><li>The game should handle invalid user input gracefully.</li></ul></li><li><p><strong>Non-Functional Requirements:</strong></p><ul><li>The code should be well-structured and easy to understand.</li><li>The game should be reasonably engaging. (Although gameplay is secondary to the learning objective).</li></ul></li></ul><h2 id=solutions>Solutions</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>get_user_input</span>() -&gt; String {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>use</span> std::io::{self, Write};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    print!(<span style=color:#e6db74>&#34;&gt; &#34;</span>);
+</span></span><span style=display:flex><span>    io::stdout().flush().unwrap(); <span style=color:#75715e>// Ensure prompt is displayed immediately
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> input <span style=color:#f92672>=</span> String::new();
+</span></span><span style=display:flex><span>    io::stdin().read_line(<span style=color:#f92672>&amp;</span><span style=color:#66d9ef>mut</span> input).expect(<span style=color:#e6db74>&#34;Failed to read line&#34;</span>);
+</span></span><span style=display:flex><span>    input.trim().to_lowercase()
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_get_user_input_not_empty</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// This test is difficult to automate without mocking stdin,
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// But we can at least ensure the function exists and returns a String.
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> input <span style=color:#f92672>=</span> get_user_input();
+</span></span><span style=display:flex><span>    assert!(input.len() <span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_get_user_input_lowercase</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// This test is difficult to automate without mocking stdin,
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// But we can at least ensure the function exists and returns a String.
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// and that it returns a lowercase string after inputting uppercase strings
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// the proper way to test would be to mock the stdin to give a deterministic behaviour
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> input <span style=color:#f92672>=</span> get_user_input();
+</span></span><span style=display:flex><span>    assert_eq!(input, input.to_lowercase());
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This function, <code>get_user_input()</code>, reads a line of text from the standard input. It displays a prompt (<code>> </code>) to the user, flushes the output buffer to ensure the prompt is visible, and then reads the input into a <code>String</code>. The <code>.trim()</code> method removes any leading or trailing whitespace, and <code>.to_lowercase()</code> normalizes the input for easier comparison later. Flushing the output stream is important to ensure the prompt <code>></code> is displayed before the program waits for input.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#75715e>#[derive(Debug, PartialEq)]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>enum</span> <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    Start,
+</span></span><span style=display:flex><span>    Forest,
+</span></span><span style=display:flex><span>    Cave,
+</span></span><span style=display:flex><span>    Treasure,
+</span></span><span style=display:flex><span>    GameOver,
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_game_state_enum</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(GameState::Start, GameState::Start);
+</span></span><span style=display:flex><span>    assert_ne!(GameState::Forest, GameState::Cave);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This defines an <code>enum</code> called <code>GameState</code>. Enums are useful for representing a fixed set of possible states. In this case, the game can be in the <code>Start</code>, <code>Forest</code>, <code>Cave</code>, <code>Treasure</code>, or <code>GameOver</code> state. The <code>#[derive(Debug, PartialEq)]</code> annotation allows us to easily print the enum&rsquo;s value for debugging and compare enum values for equality in tests.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>handle_start</span>(input: <span style=color:#66d9ef>&amp;</span><span style=color:#66d9ef>str</span>) -&gt; <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> input {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;start&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You find yourself at the entrance to a dark forest.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Forest
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _ <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;Invalid command. Type &#39;start&#39; to begin.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Start
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_start_start</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_start(<span style=color:#e6db74>&#34;start&#34;</span>), GameState::Forest);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_start_invalid</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_start(<span style=color:#e6db74>&#34;invalid&#34;</span>), GameState::Start);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The <code>handle_start</code> function processes the user&rsquo;s input when the game is in the <code>Start</code> state. It uses a <code>match</code> statement to determine the appropriate action. If the user types &ldquo;start&rdquo;, the function prints a message and transitions the game to the <code>Forest</code> state. Otherwise, it prints an error message and remains in the <code>Start</code> state. The <code>match</code> statement ensures that all possible input cases are handled.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>handle_forest</span>(input: <span style=color:#66d9ef>&amp;</span><span style=color:#66d9ef>str</span>) -&gt; <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> input {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;go left&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You enter a dark cave.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Cave
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;go right&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You are lost in the forest and die of starvation. GAME OVER!&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::GameOver
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _ <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;Invalid command. Type &#39;go left&#39; or &#39;go right&#39;.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Forest
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_forest_left</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_forest(<span style=color:#e6db74>&#34;go left&#34;</span>), GameState::Cave);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_forest_right</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_forest(<span style=color:#e6db74>&#34;go right&#34;</span>), GameState::GameOver);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Similar to <code>handle_start</code>, <code>handle_forest</code> handles input when the game is in the <code>Forest</code> state. Based on whether the user chooses &ldquo;go left&rdquo; or &ldquo;go right&rdquo;, the game transitions to either the <code>Cave</code> state or the <code>GameOver</code> state. This demonstrates simple branching logic.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>handle_cave</span>(input: <span style=color:#66d9ef>&amp;</span><span style=color:#66d9ef>str</span>) -&gt; <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> input {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;search&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You find a hidden treasure! You win!&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Treasure
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;leave&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You leave the cave and get lost in the forest. GAME OVER!&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::GameOver
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _ <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;Invalid command. Type &#39;search&#39; or &#39;leave&#39;.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Cave
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_cave_search</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_cave(<span style=color:#e6db74>&#34;search&#34;</span>), GameState::Treasure);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_cave_leave</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_cave(<span style=color:#e6db74>&#34;leave&#34;</span>), GameState::GameOver);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The <code>handle_cave</code> function handles input when the player is in the cave. Choosing to &ldquo;search&rdquo; wins the game, while choosing to &ldquo;leave&rdquo; ends the game.</p><h2 id=thoughts>Thoughts</h2><p>Now let&rsquo;s combine all the pieces to create a complete, runnable game. We&rsquo;ll use a <code>loop</code> to keep the game running until the player wins or loses, and a <code>match</code> statement to dispatch input to the appropriate handler function based on the current game state.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::io::{self, Write};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[derive(Debug, PartialEq)]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>enum</span> <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    Start,
+</span></span><span style=display:flex><span>    Forest,
+</span></span><span style=display:flex><span>    Cave,
+</span></span><span style=display:flex><span>    Treasure,
+</span></span><span style=display:flex><span>    GameOver,
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>get_user_input</span>() -&gt; String {
+</span></span><span style=display:flex><span>    print!(<span style=color:#e6db74>&#34;&gt; &#34;</span>);
+</span></span><span style=display:flex><span>    io::stdout().flush().unwrap();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> input <span style=color:#f92672>=</span> String::new();
+</span></span><span style=display:flex><span>    io::stdin().read_line(<span style=color:#f92672>&amp;</span><span style=color:#66d9ef>mut</span> input).expect(<span style=color:#e6db74>&#34;Failed to read line&#34;</span>);
+</span></span><span style=display:flex><span>    input.trim().to_lowercase()
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>handle_start</span>(input: <span style=color:#66d9ef>&amp;</span><span style=color:#66d9ef>str</span>) -&gt; <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> input {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;start&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You find yourself at the entrance to a dark forest.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Forest
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _ <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;Invalid command. Type &#39;start&#39; to begin.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Start
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>handle_forest</span>(input: <span style=color:#66d9ef>&amp;</span><span style=color:#66d9ef>str</span>) -&gt; <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> input {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;go left&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You enter a dark cave.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Cave
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;go right&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You are lost in the forest and die of starvation. GAME OVER!&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::GameOver
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _ <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;Invalid command. Type &#39;go left&#39; or &#39;go right&#39;.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Forest
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>handle_cave</span>(input: <span style=color:#66d9ef>&amp;</span><span style=color:#66d9ef>str</span>) -&gt; <span style=color:#a6e22e>GameState</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> input {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;search&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You find a hidden treasure! You win!&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Treasure
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;leave&#34;</span> <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;You leave the cave and get lost in the forest. GAME OVER!&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::GameOver
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _ <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;Invalid command. Type &#39;search&#39; or &#39;leave&#39;.&#34;</span>);
+</span></span><span style=display:flex><span>            GameState::Cave
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> game_state <span style=color:#f92672>=</span> GameState::Start;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    println!(<span style=color:#e6db74>&#34;Welcome to the Text Adventure Game!&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>loop</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>match</span> game_state {
+</span></span><span style=display:flex><span>            GameState::Start <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>let</span> input <span style=color:#f92672>=</span> get_user_input();
+</span></span><span style=display:flex><span>                game_state <span style=color:#f92672>=</span> handle_start(<span style=color:#f92672>&amp;</span>input);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            GameState::Forest <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>let</span> input <span style=color:#f92672>=</span> get_user_input();
+</span></span><span style=display:flex><span>                game_state <span style=color:#f92672>=</span> handle_forest(<span style=color:#f92672>&amp;</span>input);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            GameState::Cave <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>let</span> input <span style=color:#f92672>=</span> get_user_input();
+</span></span><span style=display:flex><span>                game_state <span style=color:#f92672>=</span> handle_cave(<span style=color:#f92672>&amp;</span>input);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            GameState::Treasure <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>                println!(<span style=color:#e6db74>&#34;Congratulations! You found the treasure and won the game!&#34;</span>);
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            GameState::GameOver <span style=color:#f92672>=&gt;</span> {
+</span></span><span style=display:flex><span>                println!(<span style=color:#e6db74>&#34;Game Over!&#34;</span>);
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_game_state_enum</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(GameState::Start, GameState::Start);
+</span></span><span style=display:flex><span>    assert_ne!(GameState::Forest, GameState::Cave);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_get_user_input_not_empty</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// This test is difficult to automate without mocking stdin,
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// But we can at least ensure the function exists and returns a String.
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> input <span style=color:#f92672>=</span> get_user_input();
+</span></span><span style=display:flex><span>    assert!(input.len() <span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_get_user_input_lowercase</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// This test is difficult to automate without mocking stdin,
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// But we can at least ensure the function exists and returns a String.
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// and that it returns a lowercase string after inputting uppercase strings
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// the proper way to test would be to mock the stdin to give a deterministic behaviour
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> input <span style=color:#f92672>=</span> get_user_input();
+</span></span><span style=display:flex><span>    assert_eq!(input, input.to_lowercase());
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_start_start</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_start(<span style=color:#e6db74>&#34;start&#34;</span>), GameState::Forest);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_start_invalid</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_start(<span style=color:#e6db74>&#34;invalid&#34;</span>), GameState::Start);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_forest_left</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_forest(<span style=color:#e6db74>&#34;go left&#34;</span>), GameState::Cave);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_forest_right</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_forest(<span style=color:#e6db74>&#34;go right&#34;</span>), GameState::GameOver);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_cave_search</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_cave(<span style=color:#e6db74>&#34;search&#34;</span>), GameState::Treasure);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#[test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>test_handle_cave_leave</span>() {
+</span></span><span style=display:flex><span>    assert_eq!(handle_cave(<span style=color:#e6db74>&#34;leave&#34;</span>), GameState::GameOver);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This complete example showcases how to combine input/output, enums, structs, and control flow to create a basic interactive program in Rust. While simplistic, it demonstrates core concepts applicable to more complex applications. Remember to run <code>cargo run</code> to play the game, and <code>cargo test</code> to execute the tests! Good luck and have fun!</p></section><footer class="mt-12 flex flex-wrap"><a class="mb-1.5 rounded-lg bg-black/[3%] px-5 py-1 no-underline hover:bg-black/[6%] ltr:mr-1.5 rtl:ml-1.5 dark:bg-white/[8%] dark:hover:bg-white/[12%]" href=https://tutorial-island.github.io/tags/rust>rust</a><a class="mb-1.5 rounded-lg bg-black/[3%] px-5 py-1 no-underline hover:bg-black/[6%] ltr:mr-1.5 rtl:ml-1.5 dark:bg-white/[8%] dark:hover:bg-white/[12%]" href=https://tutorial-island.github.io/tags/tutorial>tutorial</a><a class="mb-1.5 rounded-lg bg-black/[3%] px-5 py-1 no-underline hover:bg-black/[6%] ltr:mr-1.5 rtl:ml-1.5 dark:bg-white/[8%] dark:hover:bg-white/[12%]" href=https://tutorial-island.github.io/tags/beginner>beginner</a><a class="mb-1.5 rounded-lg bg-black/[3%] px-5 py-1 no-underline hover:bg-black/[6%] ltr:mr-1.5 rtl:ml-1.5 dark:bg-white/[8%] dark:hover:bg-white/[12%]" href=https://tutorial-island.github.io/tags/game>game</a><a class="mb-1.5 rounded-lg bg-black/[3%] px-5 py-1 no-underline hover:bg-black/[6%] ltr:mr-1.5 rtl:ml-1.5 dark:bg-white/[8%] dark:hover:bg-white/[12%]" href=https://tutorial-island.github.io/tags/text-based>text-based</a><a class="mb-1.5 rounded-lg bg-black/[3%] px-5 py-1 no-underline hover:bg-black/[6%] ltr:mr-1.5 rtl:ml-1.5 dark:bg-white/[8%] dark:hover:bg-white/[12%]" href=https://tutorial-island.github.io/tags/input/output>input/output</a><a class="mb-1.5 rounded-lg bg-black/[3%] px-5 py-1 no-underline hover:bg-black/[6%] ltr:mr-1.5 rtl:ml-1.5 dark:bg-white/[8%] dark:hover:bg-white/[12%]" href=https://tutorial-island.github.io/tags/data-structures>data structures</a></footer><nav class="mt-24 flex overflow-hidden rounded-xl bg-black/[3%] text-lg leading-[1.2]! *:flex *:w-1/2 *:items-center *:p-5 *:font-medium *:no-underline dark:bg-white/[8%] [&>*:hover]:bg-black/[2%] dark:[&>*:hover]:bg-white/[3%]"><a class="ltr:pr-3 rtl:pl-3" href=https://tutorial-island.github.io/posts/article-20250407001038/><span class="ltr:mr-1.5 rtl:ml-1.5">←</span><span>Implementing a Simple Stack in Java</span></a><a class="justify-end pl-3 ltr:ml-auto rtl:mr-auto" href=https://tutorial-island.github.io/posts/article-20250409001013/><span>Swift String Reversal Tutorial</span><span class="ltr:ml-1.5 rtl:mr-1.5">→</span></a></nav><div class="giscus mt-24"></div><script src=https://giscus.app/client.js data-repo=tutorial-island/tutorial-island.github.io data-repo-id=R_kgDOOR40uQ data-category=Comments data-category-id=giscus-comments data-mapping=pathname data-strict=1 data-reactions-enabled=0 data-emit-metadata=0 data-input-position=top data-theme=light data-lang=en data-loading=lazy crossorigin=anonymous async></script></article></main><footer class="mx-auto flex h-[4.5rem] max-w-(--w) items-center px-8 text-xs tracking-wider uppercase opacity-60"><div class=mr-auto>&copy;2025<a class=link href=https://tutorial-island.github.io/>Tutorial Island</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>powered by hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>hugo-paper</a></footer></body></html>
